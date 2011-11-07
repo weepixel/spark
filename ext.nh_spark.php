@@ -149,20 +149,20 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_links($str) {
-		// Internal links w/ anchor text
-		$regex = "/\\(([^%]*)(%{1})(([A-Za-z]{3,9})://)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((/[-\\+~%/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
+		// // Internal links w/ anchor text
+		$regex = "/\\(([^%]*)(%{1})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str);
 		
 		// External links w/ anchor text
-		$regex = "/\\(([^%]*)(%{2})(([A-Za-z]{3,9})://)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((/[-\\+~%/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
+		$regex = "/\\(([^%]*)(%{2})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str);
 		
 		// Internal links w/o anchor text
-		$regex = "/(?<!%)(%{1})(([A-Za-z]{3,9})://)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((/[-\\+~%/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
+		$regex = "/(?<!%)(%{1})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_int_plain_links"), $str);
 
 		// External links w/o anchor text		
-		$regex = "/(?<!%)(%{2})(([A-Za-z]{3,9})://)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((/[-\\+~%/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
+		$regex = "/(?<!%)(%{2})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_plain_links"), $str);
 		
 		return $str;
@@ -170,19 +170,19 @@ class Nh_spark_ext
 	
 	function _parse_int_links($matches) {
 		print_r($matches);
-		return "<a href='http://".$matches[4]."' title='".$matches[1]."'>".$matches[1]."</a>";
+		return "<a href='http://".$matches[5]."' title='".$matches[1]."'>".$matches[1]."</a>";
 	}
 	
 	function _parse_ext_links($matches) {
-		return "<a href='http://".$matches[4]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
+		return "<a href='http://".$matches[5]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
 	}
 	
 	function _parse_int_plain_links($matches) {
-		return "<a href='http://".$matches[3]."'>".$matches[3]."</a>";
+		return "<a href='http://".$matches[4]."'>".$matches[4]."</a>";
 	}
 	
 	function _parse_ext_plain_links($matches) {
-		return "<a href='http://".$matches[3]."' target='_blank'>".$matches[3]."</a>";
+		return "<a href='http://".$matches[4]."' target='_blank'>".$matches[4]."</a>";
 	}
 	
 	// --------------------------------------------------------------------
