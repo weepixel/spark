@@ -121,25 +121,25 @@ class Nh_spark_ext
 		$str = $this->parse_emphases($str);
 		$str = $this->parse_strongs($str);
 		$str = $this->parse_lists($str);
-		$str = $this->parse_links($str);
 		$str = $this->parse_emails($str);
 		$str = $this->encode_emails($str);
+		$str = $this->parse_links($str);
 		return $str;
 	}
 	
 	// --------------------------------------------------------------------
 	
 	function parse_lists($str) {
-		$regex = "/^(([+=])(?s:.+?)(\\z|\\n{2,}(?=\\S)(?![ ]*\\n)|(?=\\n\\3[+])))/umx";
+		$regex = "/^(([-=])(?![ ])(?s:.+?)(\\Z|\\n(?=[-=][ ])|\\n{2,}(?=\\S)(?![ ]*\\n)))/um";
 		// If breaks here, look at \n in (?![]*\\n)
 		$str = preg_replace_callback($regex, array(&$this, "_parse_list"), $str);
 		return $str;
 	}
 	
 	function _parse_list($matches) {
-		$list = preg_replace_callback("/(\\n?)^([ ]?)([=+]{1})(.*)(\\n)?/umx", array(&$this, '_parse_list_items'), $matches);
+		$list = preg_replace_callback("/(\\n?)^([ ]?)([=-]{1})(.*)(\\n)?/umx", array(&$this, '_parse_list_items'), $matches);
 		$tag = $matches[2] == "=" ? "ol" : "ul";
-		return "<$tag>\n".$list[1]."</$tag>\n";
+		return "<$tag>\n".$list[1]."</$tag>";
 	}
 	
 	function _parse_list_items($matches) {
@@ -150,31 +150,36 @@ class Nh_spark_ext
 	
 	function parse_links($str) {
 		// // Internal links w/ anchor text
-		$regex = "/\\(([^%]*)(%{1})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
+		$regex = "/\\(([^%\\)]*)(%{1})(\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+\\/?)?)?))\\)/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str);
 		
 		// External links w/ anchor text
-		$regex = "/\\(([^%]*)(%{2})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?)\\)/um";
+		$regex = "/\\(([^%\\)]*)(%{2})(\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+\\/?)?)?))\\)/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str);
 		
 		// Internal links w/o anchor text
-		$regex = "/(?<!%)(%{1})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
+		$regex = "/(?<!%)(%{1})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_int_plain_links"), $str);
 
 		// External links w/o anchor text		
-		$regex = "/(?<!%)(%{2})(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
+		$regex = "/(?<!%)(%{2})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[-\\+~%\\/\\.\\w]+)?\\??([-\\+=&;%@\\.\\w]+)?#?([\\w]+)?)?[^.\\s,!?*;:()'\"><\\[\\]-])/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_plain_links"), $str);
 		
 		return $str;
 	}
 	
 	function _parse_int_links($matches) {
-		print_r($matches);
-		return "<a href='http://".$matches[5]."' title='".$matches[1]."'>".$matches[1]."</a>";
+		if(empty($matches[4]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
+			return "<a href='http://".$matches[3]."' title='".$matches[1]."'>".$matches[1]."</a>";
+		}
+		return "<a href='".$matches[3]."' title='".$matches[1]."'>".$matches[1]."</a>";
 	}
 	
 	function _parse_ext_links($matches) {
-		return "<a href='http://".$matches[5]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
+		if(empty($matches[4]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
+			return "<a href='http://".$matches[3]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
+		}
+		return "<a href='http://".$matches[3]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
 	}
 	
 	function _parse_int_plain_links($matches) {
@@ -200,7 +205,7 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function encode_emails($str) { 
-		$regex = "/\\<a\\s+(href\\=\\\"mailto\\:)(([\\w-\\.]+)\\@((?:[\\w]+\\.)+)([a-zA-Z]{2,4}))\\\"(\\s*title=\\\"([^\\\"]))?[^\\<]*\\<\\/a\\>/um";
+		$regex = "/\\<a\\s+(href\\=[\"']mailto\\:)(([\\w-\\.]+)\\@((?:[\\w]+\\.)+)([a-zA-Z]{2,4}))[\"'](\\s*title=[\"']([^\\\"']))?[^\\<]*\\<\\/a\\>/um";
 		$str = preg_replace_callback($regex, array(&$this, "_encode_emails"), $str);
 		return $str;
 	}
@@ -225,19 +230,19 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_emphases($str) {
-		$regex = "/((?<!([^\*]\*))([*]{1})(?=[^\s\*])(([^\*]+|(\*{2})(?!\*))+)(?<!\s)([*]{1}))/um";
+		$regex = "/((((\n?(?<=\*\*)([*]{1})))|((\n?(?<!(\*)+)([*]{1}))))(?=[^\s*])(([^*]+|(\*{2})(?!\*))+)(?<!\s)([*]{1}))/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str);
 		return $str;
 	}
 	
 	function _parse_emphases($matches) {
-		return "<em>".$matches[4]."</em>";
+		return "<em>".$matches[10]."</em>";
 	}
 
 	// --------------------------------------------------------------------
 	
 	function parse_strongs($str) {
-		$regex = "/((?<!([^\*]\*))([*]{2})(?=[^\s\*])(([^\*]+|(\*{1})(?!\*))+)(?<!\s)([*]{2}))/um";
+		$regex = "/((?<!([^*]\*))([*]{2})(?=[^\s*])(([^*]+|(\*{1})(?!\*))+)(?<!\s)([*]{2}))/um";
 		$str = preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str);
 		return $str;
 	}
