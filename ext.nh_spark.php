@@ -130,7 +130,7 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_lists($str) {
-		$regex = "/^(([-=])(?![ ])(?s:.+?)(\\Z|\\n(?=[-=][ ])|\\n{2,}(?=\\S)(?![ ]*\\n)))/um";
+		$regex = "/^(([-=])(?![ ])(?s:.+?)(\\Z|\\n(?=[-=][ ])|(?=\\n[^-].*)\\n|\\n{2,}(?=\\S)(?![ ]*\\n)))/um";
 		// If breaks here, look at \n in (?![]*\\n)
 		$str = preg_replace_callback($regex, array(&$this, "_parse_list"), $str);
 		return $str;
