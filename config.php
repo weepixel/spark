@@ -11,7 +11,7 @@
 if ( ! defined('NH_SPARK_NAME'))
 {
 	define('NH_SPARK_NAME',    'NH Spark');
-	define('NH_SPARK_VERSION', '0.9.8.1');
+	define('NH_SPARK_VERSION', '0.9.8.2');
 	define('NH_SPARK_DOCS',    'http://ninjahaggis.com');
 }
 

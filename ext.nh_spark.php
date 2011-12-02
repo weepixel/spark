@@ -230,8 +230,10 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_emphases($str) {
-		$regex = "/((((\n?(?<=\*\*)([*]{1})))|((\n?(?<!(\*)+)([*]{1}))))(?=[^\s*])(([^*]+|(\*{2})(?!\*))+)(?<!\s)([*]{1}))/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str);
+		$regex = "/((((\\n?(?<=\\*\\*)([*]{1})))|((\\n?(?<!(\\*)+)([*]{1}))))(?=[^\\s*])(([^*]+|(\\*{2})(?!\\*))+)(?<!\\s)([*]{1}))/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str);
+		}
 		return $str;
 	}
 	
@@ -242,8 +244,10 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_strongs($str) {
-		$regex = "/((?<!([^*]\*))([*]{2})(?=[^\s*])(([^*]+|(\*{1})(?!\*))+)(?<!\s)([*]{2}))/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str);
+		$regex = "/((?<!([^*]\\*))([*]{2})(?=[^\\s*])(([^*]+|(\\*{1})(?!\\*))+)(?<!\\s)([*]{2}))/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str);
+		}
 		return $str;
 	}
 	
