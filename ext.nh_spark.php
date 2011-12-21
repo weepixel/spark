@@ -149,22 +149,30 @@ class Nh_spark_ext
 	// --------------------------------------------------------------------
 	
 	function parse_links($str) {
-		// // Internal links w/ anchor text
-		
-		$regex = "/(?<=[ ]|\\n-|\\A-|\\>|\\A|\\n)\\(([^%\\)]*)(%{1})(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,]+)?#?([\\w]+\\/?)?)?))\\)(?=[ ]|\\Z|\\n|\\<)/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str);
+
+		// Internal links w/ anchor text		
+		$regex = "/(?<=[^\\w])\\(([^%\\)]*)(%{1})(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,]+)?#?([\\w]+\\/?)?)?))\\)(?=[^\\w])/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str);
+		}
 		
 		// External links w/ anchor text
-		$regex = "/(?<=[ ]|\\n-|\\A-|\\>|\\A|\\n)\\(([^%\\)]*)(%{2})(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,]+)?#?([\\w]+\\/?)?)?))\\)(?=[ ]|\\Z|\\n|\\<)/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str);
-		
+		$regex = "/(?<=[^\\w])\\(([^%\\)]*)(%{2})(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,]+)?#?([\\w]+\\/?)?)?))\\)(?=[^\\w])/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str);
+		}
+
 		// Internal links w/o anchor text
-		$regex = "/(?<=[ ]|\\n-|\\A-|\\>|\\A|\\n)(?<!%)(%{1})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[#!-\\+~%\\/\\.\\w\\(\\)]+)?\\??([-\\+=&;%@\\.\\w\\(\\)]+)?#?([\\w]+)?)?[^.\\s,!?*;:\\('\\\\\"><\\[\\]-])(?=[ ]|\\Z|\\n|\\<)/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_int_plain_links"), $str);
+		$regex = "/(?<=[^\\w])(?<!%)(%{1})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[#!-\\+~%\\/\\.\\w\\(\\)]+)?\\??([-\\+=&;%@\\.\\w\\(\\)]+)?#?([\\w]+)?)?[^.\\s,!?*;:\\('\\\\\\\"><\\[\\]-])(?=[ ]|\\Z|\\n|\\<|\\.|\\!|\\?)/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_int_plain_links"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_int_plain_links"), $str);
+		}
 
 		// External links w/o anchor text		
-		$regex = "/(?<=[ ]|\\n-|\\A-|\\>|\\A|\\n)(?<!%)(%{2})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[#!-\\+~%\\/\\.\\w\\(\\)]+)?\\??([-\\+=&;%@\\.\\w\\(\\)]+)?#?([\\w]+)?)?[^.\\s,!?*;:\\('\\\\\"><\\[\\]-])(?=[ ]|\\Z|\\n|\\<)/um";
-		$str = preg_replace_callback($regex, array(&$this, "_parse_ext_plain_links"), $str);
+		$regex = "/(?<=[^\\w])(?<!%)(%{2})\\/?(([A-Za-z]{3,9}):\\/\\/)?(([-;:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.]+)+:?(\\d+)?((\\/[#!-\\+~%\\/\\.\\w\\(\\)]+)?\\??([-\\+=&;%@\\.\\w\\(\\)]+)?#?([\\w]+)?)?[^.\\s,!?*;:\\('\\\\\\\"><\\[\\]-])(?=[ ]|\\Z|\\n|\\<|\\.|\\!|\\?)/um";
+		if(preg_replace_callback($regex, array(&$this, "_parse_ext_plain_links"), $str) == TRUE){
+			$str = preg_replace_callback($regex, array(&$this, "_parse_ext_plain_links"), $str);
+		}
 		
 		return $str;
 	}
