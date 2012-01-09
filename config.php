@@ -1,19 +1,20 @@
 <?php
 /**
-* NH Spark Extension class
+* Wee Pixel Spark Extension
 *
-* @package			nh-spark-ee2_addon
-* @author			John Clark - Ninja Haggis <john@ninjahaggis.com>
-* @link				http://ninjahaggis.com
-* @license			http://creativecommons.org/licenses/by-sa/3.0/
+* @package		Spark
+* @subpackage	Addons
+* @category	Extension
+* @author		John Clark - Wee Pixel
+* @link 	http://weepixel.com
 */
 
-if ( ! defined('NH_SPARK_NAME'))
+if ( ! defined('WP_SPARK_NAME'))
 {
-	define('NH_SPARK_NAME',    'NH Spark');
-	define('NH_SPARK_VERSION', '0.9.8.5');
-	define('NH_SPARK_DOCS',    'http://ninjahaggis.com');
+	define('WP_SPARK_NAME',    'WP Spark');
+	define('WP_SPARK_VERSION', '0.9.8.6');
+	define('WP_SPARK_DOCS',    'http://weepixel.com');
 }
 
-$config['name']		= NH_SPARK_NAME;
-$config['version']	= NH_SPARK_VERSION;
+$config['name']		= WP_SPARK_NAME;
+$config['version']	= WP_SPARK_VERSION;
