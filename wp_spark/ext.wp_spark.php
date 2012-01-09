@@ -1,5 +1,8 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+// include config file
+require PATH_THIRD.'wp_spark/config'.EXT;
+
 /**
  * Wee Pixel Spark Extension
  *
