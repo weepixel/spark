@@ -12,7 +12,7 @@
 if ( ! defined('WP_SPARK_NAME'))
 {
 	define('WP_SPARK_NAME',    'WP Spark');
-	define('WP_SPARK_VERSION', '0.9.8.6');
+	define('WP_SPARK_VERSION', '0.9.8.7');
 	define('WP_SPARK_DOCS',    'http://weepixel.com');
 }
 
