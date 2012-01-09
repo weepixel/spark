@@ -168,7 +168,7 @@ class Wp_spark_ext
 	*/
 	
 	function parse_emphases($str) {
-		$regex = "/((((\\n?(?<=\\*\\*)([*]{1})))|((\\n?(?<!(\\*)+)([*]{1}))))(?=[^\\s*])(([^*]+|(\\*{2})(?!\\*))+)(?<!\\s)([*]{1}))/um";
+		$regex = "/((((\\n?(?<=\\*\\*)([*]{1})))|((\\n?(?<!(\\*)+)([*]{1}))))(?=[^\\s*])(([^*\\n]|(\\*{2})(?!\\*))+)(?<!\\s)([*]{1}))/um";
 		if(preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str) == TRUE){
 			$str = preg_replace_callback($regex, array(&$this, "_parse_emphases"), $str);
 		}
@@ -198,7 +198,7 @@ class Wp_spark_ext
 	*/
 	
 	function parse_strongs($str) {
-		$regex = "/((?<!([^*]\\*))([*]{2})(?=[^\\s*])(([^*]+|(\\*{1})(?!\\*))+)(?<!\\s)([*]{2}))/um";
+		$regex = "/((?<!([^*]\\*))([*]{2})(?=[^\\s*])(([^*\\n]+|(\\*{1})(?!\\*))+)(?<!\\s)([*]{2}))/um";
 		if(preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str) == TRUE){
 			$str = preg_replace_callback($regex, array(&$this, "_parse_strongs"), $str);
 		}
@@ -330,13 +330,13 @@ class Wp_spark_ext
 	function parse_links($str) {
 		
 		// Internal links w/ anchor text		
-		$regex = "/(?<=[^\\w]|\\A)\\(([^%\\)]*)(%{1})((\\/)|(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,\\?]+)?#?([\\w]+\\/?)?)?)))\\)(?=[^\\w]|\\Z)/um";
+		$regex = "/(?<=[^\\w]|\\A)\\(([^%\\(\\)]*)(%{1})((\\/)|(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,\\?]+)?#?([\\w]+\\/?)?)?)))\\)(?=[^\\w]|\\Z)/um";
 		if(preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str) == TRUE){
 			$str = preg_replace_callback($regex, array(&$this, "_parse_int_links"), $str);
 		}
 		
 		// External links w/ anchor text
-		$regex = "/(?<=[^\\w])\\(([^%\\)]*)(%{2})((\\/)|(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,\\?]+)?#?([\\w]+\\/?)?)?)))\\)(?=[^\\w])/um";
+		$regex = "/(?<=[^\\w]|\\A)\\(([^%\\(\\)]*)(%{2})((\\/)|(\\/?((([A-Za-z]{3,9}):\\/\\/)|(\\{filedir_[0-9]+\\}))?(([-{};:&=\\+\\$,\\w]+@{1})?([-A-Za-z0-9\\.{}]+)+:?(\\d+)?((\\/[-#!{}\\+~%\\/\\.\\w\\(\\)]+)?\\??([-{}\\+=&;%@\\.\\w\\(\\)\\,\\?]+)?#?([\\w]+\\/?)?)?)))\\)(?=[^\\w]|\\Z)/um";
 		if(preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str) == TRUE){
 			$str = preg_replace_callback($regex, array(&$this, "_parse_ext_links"), $str);
 		}
