@@ -367,7 +367,7 @@ class Wp_spark_ext
 	*/
 	
 	function _parse_int_links($matches) {
-		if(empty($matches[4]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
+		if(empty($matches[6]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
 			return "<a href='http://".$matches[3]."' title='".$matches[1]."'>".$matches[1]."</a>";
 		}
 		return "<a href='".$matches[3]."' title='".$matches[1]."'>".$matches[1]."</a>";
@@ -384,10 +384,10 @@ class Wp_spark_ext
 	*/
 	
 	function _parse_ext_links($matches) {
-		if(empty($matches[4]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
+		if(empty($matches[6]) && preg_match("/((.*)(\.[a-zA-Z]+))/", $matches[3])){
 			return "<a href='http://".$matches[3]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
 		}
-		return "<a href='http://".$matches[3]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
+		return "<a href='".$matches[3]."' title='".$matches[1]."' target='_blank'>".$matches[1]."</a>";
 	}
 	
 	// --------------------------------------------------------------------
